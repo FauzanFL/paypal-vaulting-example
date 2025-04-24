@@ -7,11 +7,10 @@
 </head>
 <body>
     <script src="https://js.braintreegateway.com/web/dropin/1.32.1/js/dropin.min.js"></script>
-<div id="dropin-container"></div>
-<button id="submit-button">Simpan Kartu</button>
-
+    <div id="dropin-container"></div>
+    <button id="submit-button">Simpan Kartu</button>
 <script>
-    // tokencc_bj_sdk6wv_y94x6j_v4f5fs_pjwxmk_r4y
+    // get client token
     fetch("http://localhost:5000/client_token")
         .then(res => res.json())
         .then(data => {

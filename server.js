@@ -31,7 +31,7 @@ app.get("/client_token", async (req, res) => {
 });
 
 app.post("/vault-card", async (req, res) => {
-  const { paymentMethodNonce, email, last4, cardType, expMonth, expYear } = req.body;
+  const { paymentMethodNonce, email } = req.body;
 
   try {
     // Buat customer baru
