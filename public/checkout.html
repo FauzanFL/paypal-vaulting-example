@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout</title>
+</head>
+<body>
+    <button id="checkout-button">Bayar Sekarang</button>
+
+    <script>
+        document.getElementById('checkout-button').addEventListener('click', () => {
+                const amount = "15.00";
+
+                fetch('http://localhost:5000/checkout', {
+                    method: 'POST',
+                    headers: {
+                    'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        amount: amount
+                    })
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                    alert("Transaksi berhasil! ID: " + data.transactionId);
+                    } else {
+                    alert("Gagal: " + data.message);
+                    }
+                });
+            });
+    </script>
+</body>
+</html>

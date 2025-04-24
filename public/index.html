@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paypal Cek</title>
+</head>
+<body>
+    <script src="https://js.braintreegateway.com/web/dropin/1.32.1/js/dropin.min.js"></script>
+<div id="dropin-container"></div>
+<button id="submit-button">Simpan Kartu</button>
+
+<script>
+    // tokencc_bj_sdk6wv_y94x6j_v4f5fs_pjwxmk_r4y
+    fetch("http://localhost:5000/client_token")
+        .then(res => res.json())
+        .then(data => {
+            braintree.dropin.create({
+                authorization: data.clientToken,
+                container: '#dropin-container',
+                vaultManager: true,
+                card: {
+                    cardholderName: {
+                        required: true
+                    }
+                }
+            }, function (createErr, instance) {
+                document.getElementById('submit-button').addEventListener('click', function () {
+                    instance.requestPaymentMethod(function (err, payload) {
+                        if (err) {
+                            console.error(err);
+                            return;
+                        }
+
+                        fetch("http://localhost:5000/vault-card", {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                paymentMethodNonce: payload.nonce,
+                                email: 'user1@example.com',
+                            })
+                        })
+                        .then(res => res.json())
+                        .then(result => console.log(result))
+                        .catch(console.error);
+                    });
+                });
+            });
+        })
+</script>
+
+</body>
+</html>
