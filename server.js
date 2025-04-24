@@ -9,6 +9,7 @@ app.use(bodyParser.json());
 app.use(cors());
 
 const user_vaults = []
+let id = 1;
 
 // Ganti ini dengan kredensial sandbox dari akun Braintree-mu
 const gateway = new braintree.BraintreeGateway({
@@ -56,6 +57,7 @@ app.post("/vault-card", async (req, res) => {
     
     if (result.success) {
       const data = {
+        id,
         customerId: customerId,
         token: result.paymentMethod.token,
         email,
@@ -65,6 +67,7 @@ app.post("/vault-card", async (req, res) => {
         expYear: result.paymentMethod.expirationYear
       }
       user_vaults.push(data);
+      id++;
       return res.send({message: 'Success vaulting data'});
     } else {
       return res.status(500).send({ message: result.message });
@@ -77,8 +80,7 @@ app.post("/vault-card", async (req, res) => {
 
 app.post("/checkout", async (req, res) => {
   const {amount} = req.body;
-  const email = 'user1@example.com'
-  const vault = user_vaults.find(v => v.email === email);
+  const vault = user_vaults.find(v => v.id === 1);
   const paymentMethodToken = vault.token;
 
   try {
@@ -106,17 +108,6 @@ app.post("/checkout", async (req, res) => {
     res.status(500).send({ message: err.message });
   }
 });
-
-app.get("/vault/:email", async (req, res) => {
-  const { email } = req.params;
-
-  const vault = user_vaults.find(v => v.email === email);
-  return res.status(200).send(vault);
-})
-
-app.get("/vault", async (req, res) => {
-  return res.status(200).send(user_vaults)
-})
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
